@@ -21,7 +21,7 @@ async function checkAction(req, res, next) {
   if (
     !description ||
     (!description.trim() && !notes) ||
-    (!notes.trim() && project_id)
+    (!notes.trim() && !project_id)
   ) {
     res.status(400).json({ message: "missing required fields" });
   } else {
