@@ -8,7 +8,7 @@ const { validateProjectId } = require("../projects/projects-middleware");
 // - Returns an array of actions (or an empty array) as the body of the response.
 
 router.get("/", async (req, res, next) => {
-  await Actions.get()
+  await Actions.get(req.params.id)
     .then((actions) => {
       res.status(200).json(actions);
     })
