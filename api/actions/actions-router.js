@@ -22,8 +22,12 @@ router.get("/", async (req, res, next) => {
 
 router.get("/:id", validateActionId, async (req, res, next) => {
   try {
-    res.status(200).json(req.actions);
-    next();
+    const actions = await Actions.get(req.params.id);
+    if (actions) {
+      res.status(200).json(actions);
+    } else {
+      res.status(404);
+    }
   } catch (err) {
     next(err);
   }
