@@ -1,4 +1,5 @@
 // add middlewares here related to projects
+
 const Projects = require("./projects-model");
 
 function logger(req, res, next) {
@@ -21,7 +22,6 @@ async function validateProjectId(req, res, next) {
       }
     })
     .catch((err) => {
-      //   res.status(500).json({ message: "Error fetching projects" });
       next(err);
     });
 }

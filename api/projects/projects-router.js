@@ -8,20 +8,6 @@ const { validateProjectId, checkProject } = require("./projects-middleware");
 // - If there are no projects it responds with an empty array.
 
 router.get("/", async (req, res, next) => {
-  // await Projects.get()
-  //   .then((project) => {
-  //     if (!project) {
-  //       res.status(500);
-  //       res.send([]);
-  //     } else {
-  //       res.status(200).json(project);
-  //       next();
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     next(err);
-  //   });
-
   await Projects.get()
     .then((projects) => {
       res.status(200).json(projects);
