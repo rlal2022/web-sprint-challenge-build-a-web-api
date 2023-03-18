@@ -50,7 +50,11 @@ router.post("/", [validateActionId, checkAction], async (req, res, next) => {
 router.put("/:id", validateActionId, checkAction, async (req, res, next) => {
   const updateAction = await Actions.update(req.params.id, req.body);
   try {
-    res.status(201).json(updateAction);
+    if (!updatedAction) {
+      res.status(400).json({ message: "action cannot be edited" });
+    } else {
+      res.status(201).json(updateAction);
+    }
   } catch (err) {
     next(err);
   }
