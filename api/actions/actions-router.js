@@ -32,7 +32,7 @@ router.get("/:id", validateActionId, async (req, res, next) => {
 // - If the request body is missing any of the required fields it responds with a status code 400.
 // - When adding an action make sure the `project_id` provided belongs to an existing `project`.
 
-router.post("/", checkAction, async (req, res, next) => {
+router.post("/", [validateActionId, checkAction], async (req, res, next) => {
   await Actions.insert(req.body)
     .then((action) => {
       res.status(201).json(action);
@@ -59,6 +59,7 @@ router.put("/:id", validateActionId, checkAction, async (req, res, next) => {
 // - [ ] `[DELETE] /api/actions/:id`
 // - Returns no response body.
 // - If there is no action with the given `id` it responds with a status code 404.
+
 router.delete("/:id", validateActionId, async (req, res, next) => {
   await Actions.remove(req.params.id)
     .then((action) => {
@@ -67,6 +68,12 @@ router.delete("/:id", validateActionId, async (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+});
+
+router.use((err, req, res, next) => {
+  res
+    .status(err.status || 500)
+    .json({ message: err.message, customMessage: "We ran into an error!" });
 });
 
 // - `get()`: resolves to an array of all the resources contained in the database. If you pass an `id` to this method it will return the resource with that id if one is found.
