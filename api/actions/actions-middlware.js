@@ -25,4 +25,18 @@ async function checkAction(req, res, next) {
   }
 }
 
-module.exports = { validateActionId, checkAction };
+async function checkProject(req, res, next) {
+  const { project_id } = req.body;
+  try {
+    const project = await project.get(project_id);
+    if (!project) {
+      res.status(404).json({ message: "Error, project not found!" });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { validateActionId, checkAction, checkProject };

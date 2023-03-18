@@ -2,6 +2,7 @@ const express = require("express");
 const Actions = require("./actions-model");
 const router = express.Router();
 const { validateActionId, checkAction } = require("./actions-middlware");
+const { validateProjectId } = require("../projects/projects-middleware");
 
 // [ ] `[GET] /api/actions`
 // - Returns an array of actions (or an empty array) as the body of the response.
@@ -19,20 +20,25 @@ router.get("/", async (req, res, next) => {
 // - Returns an action with the given `id` as the body of the response.
 // - If there is no action with the given `id` it responds with a status code 404.
 
-router.get("/:id", validateActionId, async (req, res, next) => {
-  try {
-    res.status(200).json(req.actions);
-    next();
-  } catch (err) {
-    res.status(404).json({ message: "We ran into an error!" });
+router.get(
+  "/:id",
+
+  validateActionId,
+  async (req, res, next) => {
+    try {
+      res.status(200).json(req.actions);
+      next();
+    } catch (err) {
+      res.status(404).json({ message: "We ran into an error!" });
+    }
   }
-});
+);
 // - [ ] `[POST] /api/actions`
 // - Returns the newly created action as the body of the response.
 // - If the request body is missing any of the required fields it responds with a status code 400.
 // - When adding an action make sure the `project_id` provided belongs to an existing `project`.
 
-router.post("/", [validateActionId, checkAction], async (req, res, next) => {
+router.post("/", validateProjectId, checkAction, async (req, res, next) => {
   await Actions.insert(req.body)
     .then((action) => {
       res.status(201).json(action);
@@ -50,11 +56,7 @@ router.post("/", [validateActionId, checkAction], async (req, res, next) => {
 router.put("/:id", validateActionId, checkAction, async (req, res, next) => {
   const updateAction = await Actions.update(req.params.id, req.body);
   try {
-    if (!updatedAction) {
-      res.status(400).json({ message: "action cannot be edited" });
-    } else {
-      res.status(201).json(updateAction);
-    }
+    res.status(201).json(updateAction);
   } catch (err) {
     next(err);
   }
