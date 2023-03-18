@@ -20,19 +20,14 @@ router.get("/", async (req, res, next) => {
 // - Returns an action with the given `id` as the body of the response.
 // - If there is no action with the given `id` it responds with a status code 404.
 
-router.get(
-  "/:id",
-
-  validateActionId,
-  async (req, res, next) => {
-    try {
-      res.status(200).json(req.actions);
-      next();
-    } catch (err) {
-      res.status(404).json({ message: "We ran into an error!" });
-    }
+router.get("/:id", validateActionId, async (req, res, next) => {
+  try {
+    res.status(200).json(req.actions);
+    next();
+  } catch (err) {
+    next(err);
   }
-);
+});
 // - [ ] `[POST] /api/actions`
 // - Returns the newly created action as the body of the response.
 // - If the request body is missing any of the required fields it responds with a status code 400.

@@ -17,8 +17,12 @@ async function validateActionId(req, res, next) {
     });
 }
 async function checkAction(req, res, next) {
-  const { description, notes } = req.body;
-  if (!description || (!description.trim() && !notes) || !notes.trim()) {
+  const { project_id, description, notes } = req.body;
+  if (
+    !description ||
+    (!description.trim() && !notes) ||
+    (!notes.trim() && project_id)
+  ) {
     res.status(400).json({ message: "missing required fields" });
   } else {
     next();
